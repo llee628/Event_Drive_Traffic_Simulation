@@ -4,6 +4,7 @@
 using namespace std;
 
 #include "IntersectionSimulationClass.h"
+#include "EventClass.h"
 #include "random.h"
 
 void IntersectionSimulationClass::readParametersFromFile(
@@ -193,13 +194,38 @@ void IntersectionSimulationClass::scheduleArrival(
      const string &travelDir
      )
 {
-  cout << "THIS FUNCTION NEEDS TO BE IMPLEMENTED" << endl;
+
+    if (travelDir == EAST_DIRECTION)
+    {
+        EventClass newEvent(currentTime, EVENT_ARRIVE_EAST);
+        eventList.insertValue(newEvent);
+    }
+    else if (travelDir == WEST_DIRECTION)
+    {
+        EventClass newEvent(currentTime, EVENT_ARRIVE_WEST);
+        eventList.insertValue(newEvent);
+    }
+    else if (travelDir == NORTH_DIRECTION)
+    {
+        EventClass newEvent(currentTime, EVENT_ARRIVE_NORTH);
+        eventList.insertValue(newEvent);
+    }
+    else if (travelDir == SOUTH_DIRECTION)
+    {
+        EventClass newEvent(currentTime, EVENT_ARRIVE_SOUTH);
+        eventList.insertValue(newEvent);
+    }
+    else
+    {
+        cout << "The heading direction of the car is unknown" << endl;
+    }
 }
 
 void IntersectionSimulationClass::scheduleLightChange(
      )
 {
-  cout << "THIS FUNCTION NEEDS TO BE IMPLEMENTED" << endl;
+    EventClass newEvent(currentTime, currentLight);
+    eventList.insertValue(newEvent);
 }
 
 bool IntersectionSimulationClass::handleNextEvent(

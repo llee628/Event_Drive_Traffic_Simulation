@@ -62,6 +62,7 @@ class EventClass
     //SortedListClass needs in order to sort event class objects
     //here!  An event "A" is "less than" an event "B" if
     //"A"'s time is less than "B"'s time.
+    bool operator<=(const EventClass& rhs);
 
     //Since this insertion operator really ought to be a method, but 
     //can't be due to the way C++ manages operator overloading, we

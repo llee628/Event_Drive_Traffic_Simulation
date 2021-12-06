@@ -50,3 +50,13 @@ ostream& operator<<(
   return outStream;
 }
 
+bool EventClass::operator<=(const EventClass& rhs)
+{
+    if (timeOccurs <= rhs.timeOccurs)
+    {
+        return true;
+    }
+
+    return false;
+}
+
