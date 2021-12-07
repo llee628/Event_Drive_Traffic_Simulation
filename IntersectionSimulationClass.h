@@ -85,6 +85,38 @@ class IntersectionSimulationClass
     int numTotalAdvancedWest;
     int numTotalAdvancedNorth;
     int numTotalAdvancedSouth;
+
+    // private member function
+    
+    // handle car arrival east-bound event
+    void handleEventArriveEast(const EventClass& event);
+
+    // handle car arrival west-bound event
+    void handleEventArriveWest(const EventClass& event);
+
+    // handle car arrival north-bound event
+    void handleEventArriveNorth(const EventClass& event);
+
+    // handle car arrival south-bound event
+    void handleEventArriveSouth(const EventClass& event);
+
+    // handle light change from “Green in East-West” to “Yellow in East-West”
+    // event
+    void handleEventChangeYellowEw(const EventClass& event);
+
+    // handle Light change from “Yellow in East-West” to “Green in North-South”
+    // event
+    void handleEventChangeGreenNs(const EventClass& event);
+
+    // handle light change from “Green in North-South” to “Yellow in 
+    // North-South” event
+    void handleEventChangeYellowNs(const EventClass& event);
+
+    // handle light change from “Yellow in North-South” to “Green in East-West”
+    // event
+    void handleEventChangeGreenEw(const EventClass& event);
+
+
   public:
     //Explicit default ctor - sets the state of the sim to be NOT yet
     //setup properly.

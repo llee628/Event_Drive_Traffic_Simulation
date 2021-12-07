@@ -7,6 +7,13 @@ using namespace std;
 #include "EventClass.h"
 #include "random.h"
 
+/*
+    Programmer: Leo Lee
+    Date: Dec. 6, 2021
+    Purpose: This programme involves the implementations of the 
+    IntersectionSimulationClass methods
+*/
+
 void IntersectionSimulationClass::readParametersFromFile(
      const string &paramFname
      )
@@ -194,26 +201,50 @@ void IntersectionSimulationClass::scheduleArrival(
      const string &travelDir
      )
 {
-
+    cout << "Time: " << currentTime << " " << "Scheduled ";
     if (travelDir == EAST_DIRECTION)
     {
-        EventClass newEvent(currentTime, EVENT_ARRIVE_EAST);
+        int nextArriveOccurTime = currentTime + 
+                                  getPositiveNormal(
+                                    eastArrivalMean,
+                                    eastArrivalStdDev
+                                  );
+        EventClass newEvent(nextArriveOccurTime, EVENT_ARRIVE_EAST);
         eventList.insertValue(newEvent);
+        cout << newEvent << endl;
     }
     else if (travelDir == WEST_DIRECTION)
     {
-        EventClass newEvent(currentTime, EVENT_ARRIVE_WEST);
+        int nextArriveOccurTime = currentTime + 
+                                  getPositiveNormal(
+                                    westArrivalMean,
+                                    westArrivalStdDev
+                                  );
+        EventClass newEvent(nextArriveOccurTime, EVENT_ARRIVE_WEST);
         eventList.insertValue(newEvent);
+        cout << newEvent << endl;
     }
     else if (travelDir == NORTH_DIRECTION)
     {
-        EventClass newEvent(currentTime, EVENT_ARRIVE_NORTH);
+        int nextArriveOccurTime = currentTime + 
+                                  getPositiveNormal(
+                                    northArrivalMean,
+                                    northArrivalStdDev
+                                  );
+        EventClass newEvent(nextArriveOccurTime, EVENT_ARRIVE_NORTH);
         eventList.insertValue(newEvent);
+        cout << newEvent << endl;
     }
     else if (travelDir == SOUTH_DIRECTION)
     {
-        EventClass newEvent(currentTime, EVENT_ARRIVE_SOUTH);
+        int nextArriveOccurTime = currentTime + 
+                                  getPositiveNormal(
+                                    southArrivalMean,
+                                    southArrivalStdDev
+                                  );
+        EventClass newEvent(nextArriveOccurTime, EVENT_ARRIVE_SOUTH);
         eventList.insertValue(newEvent);
+        cout << newEvent << endl;
     }
     else
     {
@@ -224,14 +255,105 @@ void IntersectionSimulationClass::scheduleArrival(
 void IntersectionSimulationClass::scheduleLightChange(
      )
 {
-    EventClass newEvent(currentTime, currentLight);
-    eventList.insertValue(newEvent);
+    int nextEventTime;
+
+    cout << "Time: " << currentTime << " " << "Scheduled ";
+
+    // The color state change base on the spec light change cycle
+    if (currentLight == LIGHT_GREEN_EW)
+    {
+        nextEventTime = currentTime + eastWestGreenTime;
+        EventClass newEvent(nextEventTime, EVENT_CHANGE_YELLOW_EW);
+        eventList.insertValue(newEvent);
+        cout << newEvent << endl;
+    }
+    else if (currentLight == LIGHT_YELLOW_EW)
+    {
+        nextEventTime = currentTime + eastWestYellowTime;
+        EventClass newEvent(currentTime, EVENT_CHANGE_GREEN_NS);
+        eventList.insertValue(newEvent);
+        cout << newEvent << endl;
+    }
+    else if (currentLight == LIGHT_GREEN_NS)
+    {
+        nextEventTime = currentTime + northSouthGreenTime;
+        EventClass newEvent(currentTime, EVENT_CHANGE_YELLOW_NS);
+        eventList.insertValue(newEvent);
+        cout << newEvent << endl;
+    }
+    else if (currentLight == LIGHT_YELLOW_NS)
+    {
+        nextEventTime = currentTime + northSouthYellowTime;
+        EventClass newEvent(currentTime, EVENT_CHANGE_GREEN_EW);
+        eventList.insertValue(newEvent);
+        cout << newEvent << endl;
+    }
+    else
+    {
+        cout << "Unknown light event!!" << endl;
+    }
+    
 }
 
 bool IntersectionSimulationClass::handleNextEvent(
      )
 {
-  cout << "THIS FUNCTION NEEDS TO BE IMPLEMENTED" << endl;
+    cout << endl;
+    //eventList.printForward();
+    if (currentTime > timeToStopSim)
+    {
+        return false;
+    }
+
+    EventClass nextEvent;
+
+    if (!eventList.removeFront(nextEvent))
+    {
+        cout << "Error!!: The eventList is empty" << endl;
+    }
+
+    int nextEventType = nextEvent.getType();
+
+    if (nextEventType == EVENT_ARRIVE_EAST)
+    {
+        handleEventArriveEast(nextEvent);
+    }
+    else if (nextEventType == EVENT_ARRIVE_WEST)
+    {
+        handleEventArriveWest(nextEvent);
+    }
+    else if (nextEventType == EVENT_ARRIVE_NORTH)
+    {
+        handleEventArriveNorth(nextEvent);
+    }
+    else if (nextEventType == EVENT_ARRIVE_SOUTH)
+    {
+        handleEventArriveSouth(nextEvent);
+    }
+    else if (nextEventType == EVENT_CHANGE_GREEN_EW)
+    {
+        return false;
+    }
+    else if (nextEventType == EVENT_CHANGE_YELLOW_EW)
+    {
+        return false;
+    }
+    else if (nextEventType == EVENT_CHANGE_GREEN_NS)
+    {
+        return false;
+    }
+    else if (nextEventType == EVENT_CHANGE_YELLOW_NS)
+    {
+        return false;
+    }
+    else
+    {
+        cout << "The next event unkonown" << endl;
+        return false;
+    }
+
+
+    return true;
 }
 
 void IntersectionSimulationClass::printStatistics(
@@ -251,4 +373,116 @@ void IntersectionSimulationClass::printStatistics(
   cout << "  Total cars advanced south-bound: " <<
           numTotalAdvancedSouth << endl;
   cout << "===== End Simulation Statistics =====" << endl;
+}
+
+// private methods
+
+void IntersectionSimulationClass::handleEventArriveEast(
+     const EventClass& event
+     )
+{
+    cout << "Handling " << event << endl;
+
+    // update the current time base on the event occurs
+    currentTime = event.getTimeOccurs();
+
+    CarClass newCar(EAST_DIRECTION, currentTime);
+    eastQueue.enqueue(newCar);
+    int queueSize = eastQueue.getNumElems();
+    
+    // print the car arrive info
+    newCar.printArrive();
+    cout << " - queue length: " << queueSize << endl;
+
+    // check if need to update the max queue length
+    if (queueSize > maxEastQueueLength)
+    {
+        maxEastQueueLength = queueSize;
+    }
+
+    // schedule the next east arrival event
+    scheduleArrival(EAST_DIRECTION);
+
+}
+
+void IntersectionSimulationClass::handleEventArriveWest(
+     const EventClass& event
+     )
+{
+    cout << "Handling " << event << endl;
+
+    // update the current time base on the event occurs
+    currentTime = event.getTimeOccurs();
+
+    CarClass newCar(WEST_DIRECTION, currentTime);
+    westQueue.enqueue(newCar);
+    int queueSize = westQueue.getNumElems();
+
+    // print the car arrive info
+    newCar.printArrive();
+    cout << " - queue length: " << queueSize << endl;
+
+    // check if need to update the max queue length
+    if (queueSize > maxWestQueueLength)
+    {
+        maxWestQueueLength = queueSize;
+    }
+
+    // schedule the next east arrival event
+    scheduleArrival(WEST_DIRECTION);
+}
+
+void IntersectionSimulationClass::handleEventArriveNorth(
+     const EventClass& event
+     )
+{
+    cout << "Handling " << event << endl;
+
+    // update the current time base on the event occurs
+    currentTime = event.getTimeOccurs();
+
+    CarClass newCar(NORTH_DIRECTION, currentTime);
+    northQueue.enqueue(newCar);
+    int queueSize = northQueue.getNumElems();
+
+    // print the car arrive info
+    newCar.printArrive();
+    cout << " - queue length: " << queueSize << endl;
+    
+    // check if need to update the max queue length
+    
+    if (queueSize > maxWestQueueLength)
+    {
+        maxNorthQueueLength = queueSize;
+    }
+
+    // schedule the next east arrival event
+    scheduleArrival(NORTH_DIRECTION);
+}
+
+void IntersectionSimulationClass::handleEventArriveSouth(
+     const EventClass& event
+     )
+{
+    cout << "Handling " << event << endl;
+
+    // update the current time base on the event occurs
+    currentTime = event.getTimeOccurs();
+
+    CarClass newCar(SOUTH_DIRECTION, currentTime);
+    southQueue.enqueue(newCar);
+    int queueSize = southQueue.getNumElems();
+
+    // print the car arrive info
+    newCar.printArrive();
+    cout << " - queue length: " << queueSize << endl;
+
+    // check if need to update the max queue length
+    if (queueSize > maxWestQueueLength)
+    {
+        maxSouthQueueLength = queueSize;
+    }
+
+    // schedule the next east arrival event
+    scheduleArrival(SOUTH_DIRECTION);
 }

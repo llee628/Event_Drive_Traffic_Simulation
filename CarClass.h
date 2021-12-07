@@ -52,6 +52,9 @@ class CarClass
       return uniqueId;
     }
 
+    // output the car info when arriving the intersection bounds
+    void printArrive() const;
+
     //Since this insertion operator really ought to be a method, but 
     //can't be due to the way C++ manages operator overloading, we
     //make it an "honorary method" by declaring it as a friend.

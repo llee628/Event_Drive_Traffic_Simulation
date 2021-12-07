@@ -1,4 +1,5 @@
 #include "CarClass.h"
+#include "constants.h"
 
 #include <iostream>
 using namespace std;
@@ -16,5 +17,32 @@ ostream& operator<<(
                " arrived: " << carToPrint.arrivalTime;
 
   return outStream;
+}
+
+// public methods
+void CarClass::printArrive() const
+{
+    cout << "Time: " << arrivalTime << " Car #" << uniqueId << " arrives ";
+
+    if (travelDir == EAST_DIRECTION)
+    {
+        cout << "east-bound";
+    }
+    else if (travelDir == WEST_DIRECTION)
+    {
+        cout << "west-bound";
+    }
+    else if (travelDir == NORTH_DIRECTION)
+    {
+        cout << "north-bound";
+    }
+    else if (travelDir == SOUTH_DIRECTION)
+    {
+        cout << "south-bound";
+    }
+    else
+    {
+        cout << "Unknown direction bound" << endl;
+    }
 }
 
