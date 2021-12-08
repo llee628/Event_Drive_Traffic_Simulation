@@ -55,6 +55,9 @@ class CarClass
     // output the car info when arriving the intersection bounds
     void printArrive() const;
 
+    // output the car info when the car advances to the heading bound
+    void printAdvance() const;
+
     //Since this insertion operator really ought to be a method, but 
     //can't be due to the way C++ manages operator overloading, we
     //make it an "honorary method" by declaring it as a friend.

@@ -42,7 +42,35 @@ void CarClass::printArrive() const
     }
     else
     {
-        cout << "Unknown direction bound" << endl;
+        cout << "unknown direction bound" << endl;
     }
+}
+
+void CarClass::printAdvance() const
+{
+    cout << "  Car #" << uniqueId << " advances ";
+    
+    if (travelDir == EAST_DIRECTION)
+    {
+        cout << "east-bound";
+    }
+    else if (travelDir == WEST_DIRECTION)
+    {
+        cout << "west-bound";
+    }
+    else if (travelDir == NORTH_DIRECTION)
+    {
+        cout << "north-bound";
+    }
+    else if (travelDir == SOUTH_DIRECTION)
+    {
+        cout << "south-bound";
+    }
+    else
+    {
+        cout << "unknown direction bound";
+    }
+
+    cout << endl;
 }
 
