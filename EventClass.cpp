@@ -4,6 +4,13 @@ using namespace std;
 #include "EventClass.h"
 #include "constants.h"
 
+/*
+    Programmer: Leo Lee
+    Date: Dec. 8, 2021
+    Purpose: This programm involves the implementation of EventClass methods.
+    Add a operator overloading to match the implementation of SortedListClass
+*/
+
 ostream& operator<<(
      ostream& outStream,
      const EventClass &eventToPrint

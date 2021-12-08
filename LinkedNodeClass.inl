@@ -59,12 +59,12 @@ void LinkedNodeClass< T >::setBeforeAndAfterPointers()
 {
     if (prevNode != NULL)
     {
-        prevNode -> nextNode = this;
+        prevNode->nextNode = this;
     }
 
     if (nextNode != NULL)
     {
-        nextNode -> prevNode = this;
+        nextNode->prevNode = this;
     }
 }
 

@@ -4,6 +4,12 @@
 #include <iostream>
 using namespace std;
 
+/*
+    Prgrammer: Leo Lee
+    Date: Dec. 8, 2021
+    Purpose: This programmer invloves the implementation of CarClass methods
+*/
+
 //Assign the static attribute used for auto-assigning unique ids
 int CarClass::nextIdVal = 0;
 
